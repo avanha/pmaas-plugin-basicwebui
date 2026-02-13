@@ -1,8 +1,8 @@
-package webrender
+package basicwebui
 
-type WebRenderPluginConfig struct {
+type PluginConfig struct {
 }
 
-func NewWebRenderPluginConfig() WebRenderPluginConfig {
-	return WebRenderPluginConfig{}
+func NewPluginConfig() PluginConfig {
+	return PluginConfig{}
 }

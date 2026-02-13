@@ -1,4 +1,4 @@
-package webrender
+package basicwebui
 
 import (
 	"embed"
@@ -27,16 +27,16 @@ type state struct {
 	container spi.IPMAASContainer
 }
 
-type webRenderPlugin struct {
+type plugin struct {
 	state *state
 }
 
-type WebRenderPlugin interface {
+type Plugin interface {
 	spi.IPMAASPlugin
 }
 
-func NewWebRenderPlugin(_ WebRenderPluginConfig) WebRenderPlugin {
-	instance := &webRenderPlugin{
+func NewPlugin(_ PluginConfig) Plugin {
+	instance := &plugin{
 		state: &state{
 			container: nil,
 		},
@@ -46,19 +46,19 @@ func NewWebRenderPlugin(_ WebRenderPluginConfig) WebRenderPlugin {
 }
 
 // Implementation of spi.IPMAASRenderPlugin
-var _ spi.IPMAASRenderPlugin = (*webRenderPlugin)(nil)
+var _ spi.IPMAASRenderPlugin = (*plugin)(nil)
 
-func (p *webRenderPlugin) Init(container spi.IPMAASContainer) {
+func (p *plugin) Init(container spi.IPMAASContainer) {
 	p.state.container = container
 	container.ProvideContentFS(&contentFS, "content")
 	container.EnableStaticContent("static")
 }
 
-func (p *webRenderPlugin) Start() {
+func (p *plugin) Start() {
 	fmt.Printf("%v Starting...\n", *p)
 }
 
-func (p *webRenderPlugin) Stop() {
+func (p *plugin) Stop() {
 	fmt.Printf("%v Stopping...\n", *p)
 }
 
@@ -108,7 +108,7 @@ func (c *renderContext) appendScripts(scripts []string) {
 	c.scripts = append(c.scripts, scripts...)
 }
 
-func (p *webRenderPlugin) RenderList(
+func (p *plugin) RenderList(
 	w http.ResponseWriter, _ *http.Request, options spi.RenderListOptions, items []interface{}) {
 	currentTime := time.Now()
 	compiledTemplate, err := p.state.container.GetTemplate(&ListTemplate)
@@ -156,7 +156,7 @@ func (p *webRenderPlugin) RenderList(
 	}
 }
 
-func (p *webRenderPlugin) getRenderer(item any, ctx *renderContext) spi.EntityRenderer {
+func (p *plugin) getRenderer(item any, ctx *renderContext) spi.EntityRenderer {
 	itemType := reflect.TypeOf(item)
 
 	if itemType.Kind() == reflect.Ptr {
