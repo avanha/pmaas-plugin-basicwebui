@@ -1,0 +1,46 @@
+<div class="entity-wireless-thermometer">
+    <div class="title-row">
+        <div class="name">{{.Name}}</div>
+        {{if not .RSSIData.IsEmpty}}
+            {{with .RSSIData -}}
+            <div class="rssi-data">
+            {{/* Bootstrap icon for signal strength indication: https://icons.getbootstrap.com/icons/reception-0/ */}}
+                <div>{{.RSSI}}</div>
+                {{/*<div>{{.LastUpdateTime}}</div>*/}}
+            </div>
+            {{end}}
+        {{end}}
+        {{if not .BatteryData.IsEmpty}}
+            {{with .BatteryData -}}
+            <div class="battery-data">
+                <div class="value">{{.Level}}</div>
+                {{/*<div>{{.LastUpdateTime}}</div>*/}}
+            </div>
+            {{end}}
+        {{end}}
+    </div>
+    {{if .SensorData.IsEmpty}}
+        <div>Waiting for data</div>
+    {{else}}
+        {{with .SensorData -}}
+        <div class="sensor-data">
+            <div class="temperature">
+                <div class="celsius">{{printf "%.2f" .Temperature}} C</div>
+                <div class="fahrenheit">{{CelsiusToFahrenheit .Temperature | printf "%.2f"}} F</div>
+            </div>
+            <div class="humidity-and-timestamp">
+            {{if .HasHumidity}}
+                <div class="humidity">
+                    <div class="label">Humidity</div>
+                    <div class="value">{{.Humidity}}%</div>
+                </div>
+            {{end}}
+            <div class="timestamp">
+                <div class="label">Updated</div>
+                <div class="value">{{RelativeTime .LastUpdateTime}}</div>
+            </div>
+        </div>
+        {{end}}
+    {{end}}
+
+</div>

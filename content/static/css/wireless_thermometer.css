@@ -1,0 +1,88 @@
+.entity-wireless-thermometer {
+
+}
+
+.entity-wireless-thermometer .title-row {
+    display: flex;
+    flex-flow: row nowrap;
+    /*gap: 5px;*/
+}
+
+.entity-wireless-thermometer .title-row .name {
+    flex: 1;
+    font-size: 15pt;
+}
+
+.entity-wireless-thermometer .title-row .rssi-data {
+    color: grey;
+}
+
+.entity-wireless-thermometer .title-row .battery-data {
+    color: grey;
+    margin-left: 5px;
+}
+
+.entity-wireless-thermometer .title-row .battery-data .value::after {
+    content: "%";
+}
+
+.entity-wireless-thermometer .sensor-data {
+    /*
+    display: flex;
+    flex-flow: row wrap;
+    */
+    color: #6fb5c7;
+}
+
+.entity-wireless-thermometer .sensor-data .temperature {
+    display: flex;
+    flex: 1;
+    flex-flow: row nowrap;
+    /*gap: 5px;*/
+    align-items: baseline;
+}
+
+.entity-wireless-thermometer .sensor-data .temperature .celsius {
+    font-size: 25pt;
+    /* width: 7ch; - It's better to position the faherheit value relative */
+}
+
+.entity-wireless-thermometer .sensor-data .temperature .fahrenheit {
+    font-size: 15pt;
+    margin-left: 20px;
+}
+
+.entity-wireless-thermometer .sensor-data .humidity-and-timestamp {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.entity-wireless-thermometer .sensor-data .humidity-and-timestamp .humidity {
+    display: flex;
+    flex: 1;
+    flex-flow: row nowrap;
+    /*gap: 5px;*/
+}
+
+.entity-wireless-thermometer .sensor-data .humidity-and-timestamp .humidity .label {
+    margin-right: 5px;
+}
+
+.entity-wireless-thermometer .sensor-data .humidity-and-timestamp .humidity .label::after {
+    content: ":";
+}
+
+.entity-wireless-thermometer .sensor-data .humidity-and-timestamp .timestamp {
+    display: flex;
+    flex-flow: row nowrap;
+    color: grey;
+    /*gap: 5px;*/
+}
+
+.entity-wireless-thermometer .sensor-data .humidity-and-timestamp .timestamp .label {
+    margin-right: 5px;
+}
+
+.entity-wireless-thermometer .sensor-data .humidity-and-timestamp .timestamp .label::after {
+    content: ":";
+}
