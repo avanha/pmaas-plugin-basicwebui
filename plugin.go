@@ -58,8 +58,10 @@ func (p *plugin) Start() {
 	fmt.Printf("%v Starting...\n", *p)
 }
 
-func (p *plugin) Stop() {
+func (p *plugin) Stop() chan func() {
 	fmt.Printf("%v Stopping...\n", *p)
+
+	return p.state.container.ClosedCallbackChannel()
 }
 
 type listData struct {
