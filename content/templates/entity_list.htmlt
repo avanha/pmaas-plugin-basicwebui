@@ -10,6 +10,9 @@
         {{range .Styles}}
             <link rel="stylesheet" href="{{.}}"/>
         {{end}}
+        {{range .Scripts}}
+            <script src="{{.}}" defer></script>
+        {{end}}
     </head>
     <body class="entity-list">
         <div class="page-header">
