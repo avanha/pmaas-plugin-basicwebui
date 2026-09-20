@@ -1,0 +1,92 @@
+/* Navigation chrome (hamburger-triggered off-canvas menu) added by the shared layout template.
+   Always collapsed by default, at every viewport width - only the hamburger button opens it.
+   CSS-only, no JS: the open/closed state is driven purely by the hidden #nav-toggle checkbox and
+   the label elements ("hamburger" button + backdrop) that toggle it, matching this app's existing
+   no-JS-framework approach (meta-refresh instead of JS polling). */
+
+.nav-toggle-checkbox {
+    display: none;
+}
+
+.nav-backdrop {
+    display: none;
+}
+
+.app-nav {
+    box-sizing: border-box;
+    width: 220px;
+    background: #ffffff;
+    color: #333;
+    border-right: 1px solid #a19f9c;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out;
+    z-index: 2;
+}
+
+.app-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.app-nav li > ul {
+    padding-left: 18px;
+}
+
+.app-nav a {
+    display: block;
+    padding: 8px 16px;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.95em;
+}
+
+.app-nav a:hover {
+    background: #f0f0f0;
+}
+
+.app-nav a.current {
+    background: #e6e6e6;
+    font-weight: bold;
+}
+
+.nav-group-label {
+    display: block;
+    padding: 8px 16px;
+    color: #777;
+    font-size: 0.95em;
+}
+
+.nav-toggle-button {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1.4em;
+    line-height: 1;
+    padding: 0 10px 0 0;
+    color: #333;
+}
+
+.app-main {
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.nav-toggle-checkbox:checked ~ .app-nav {
+    transform: translateX(0);
+}
+
+.nav-toggle-checkbox:checked ~ .nav-backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}

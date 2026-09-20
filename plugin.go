@@ -15,12 +15,12 @@ import (
 var contentFS embed.FS
 
 var ListTemplate = spi.TemplateInfo{
-	Name: "entity_list",
+	Name: "layout",
 	FuncMap: template.FuncMap{
 		"RenderItem": RenderItem,
 	},
-	Paths:  []string{"templates/entity_list.htmlt"},
-	Styles: []string{"css/entity_list.css"},
+	Paths:  []string{"templates/layout.htmlt", "templates/entity_list.htmlt"},
+	Styles: []string{"css/entity_list.css", "css/nav.css"},
 }
 
 type state struct {
@@ -48,6 +48,10 @@ func NewPlugin(_ PluginConfig) Plugin {
 // Implementation of spi.IPMAASRenderPlugin
 var _ spi.IPMAASRenderPlugin = (*plugin)(nil)
 
+func (p *plugin) ShortName() string {
+	return "basicwebui"
+}
+
 func (p *plugin) Init(container spi.IPMAASContainer) {
 	p.state.container = container
 	container.ProvideContentFS(&contentFS, "content")
@@ -71,6 +75,8 @@ type listData struct {
 	Items       []*itemValueAndRenderer
 	Styles      []string
 	Scripts     []string
+	Menu        []spi.MenuEntry
+	CurrentPath string
 }
 
 type itemValueAndRenderer struct {
@@ -111,7 +117,7 @@ func (c *renderContext) appendScripts(scripts []string) {
 }
 
 func (p *plugin) RenderList(
-	w http.ResponseWriter, _ *http.Request, options spi.RenderListOptions, items []interface{}) {
+	w http.ResponseWriter, r *http.Request, options spi.RenderListOptions, items []interface{}) {
 	currentTime := time.Now()
 	compiledTemplate, err := p.state.container.GetTemplate(&ListTemplate)
 
@@ -145,6 +151,8 @@ func (p *plugin) RenderList(
 		Items:       wrappedItems,
 		Styles:      ctx.styles,
 		Scripts:     ctx.scripts,
+		Menu:        p.state.container.GetMenu(),
+		CurrentPath: r.URL.Path,
 	}
 
 	if data.Title == "" {

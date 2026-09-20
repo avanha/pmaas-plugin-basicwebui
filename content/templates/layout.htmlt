@@ -1,0 +1,49 @@
+{{define "layout"}}<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{.Title}}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta http-equiv="refresh" content="30">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        {{range .Styles}}
+            <link rel="stylesheet" href="{{.}}"/>
+        {{end}}
+        {{range .Scripts}}
+            <script src="{{.}}" defer></script>
+        {{end}}
+    </head>
+    <body class="entity-list">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox">
+        <label for="nav-toggle" class="nav-backdrop"></label>
+        <nav class="app-nav">
+            <ul>
+                {{range .Menu}}
+                    <li>
+                        {{if .Path}}
+                            <a href="{{.Path}}"{{if eq .Path $.CurrentPath}} class="current"{{end}}>{{if .Icon}}<i class="bi bi-{{.Icon}}"></i> {{end}}{{.Label}}</a>
+                        {{else}}
+                            <span class="nav-group-label">{{.Label}}</span>
+                        {{end}}
+                        {{if .Children}}
+                            <ul>
+                                {{range .Children}}
+                                    <li><a href="{{.Path}}"{{if eq .Path $.CurrentPath}} class="current"{{end}}>{{if .Icon}}<i class="bi bi-{{.Icon}}"></i> {{end}}{{.Label}}</a></li>
+                                {{end}}
+                            </ul>
+                        {{end}}
+                    </li>
+                {{end}}
+            </ul>
+        </nav>
+        <div class="app-main">
+            <div class="page-header">
+                <label for="nav-toggle" class="nav-toggle-button" aria-label="Toggle navigation menu"><i class="bi bi-list"></i></label>
+                <div class="title">{{.Title}}</div>
+                <div class="timestamp">{{.CurrentTime.Format "2006-01-02 3:04:05 PM"}}</div>
+            </div>
+            {{template "content" .}}
+        </div>
+    </body>
+</html>{{end}}
