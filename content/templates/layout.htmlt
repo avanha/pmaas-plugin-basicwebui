@@ -1,7 +1,7 @@
 {{define "layout"}}<!DOCTYPE html>
 <html>
     <head>
-        <title>{{.Title}}</title>
+        <title>{{.Title}}{{if .TitleSuffix}} {{.TitleSuffix}}{{end}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="mobile-web-app-capable" content="yes">
@@ -40,7 +40,7 @@
         <div class="app-main">
             <div class="page-header">
                 <label for="nav-toggle" class="nav-toggle-button" aria-label="Toggle navigation menu"><i class="bi bi-list"></i></label>
-                <div class="title">{{.Title}}</div>
+                <div class="title">{{.Title}}{{if .TitleSuffix}} <span class="title-suffix">{{.TitleSuffix}}</span>{{end}}</div>
                 <div class="timestamp">{{.CurrentTime.Format "2006-01-02 3:04:05 PM"}}</div>
             </div>
             {{template "content" .}}

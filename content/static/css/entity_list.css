@@ -13,6 +13,14 @@ body {
 .page-header .title {
     flex: 1;
     font-size: x-large;
+    min-width: 0;
+}
+
+.title-suffix {
+    font-size: small;
+    font-weight: normal;
+    color: grey;
+    word-break: break-all;
 }
 
 .page-header .timestamp {

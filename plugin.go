@@ -106,6 +106,7 @@ func (p *plugin) Stop() chan func() {
 type listData struct {
 	CurrentTime time.Time
 	Title       string
+	TitleSuffix string
 	Header      *itemValueAndRenderer
 	Items       []*itemValueAndRenderer
 	Styles      []string
@@ -182,6 +183,7 @@ func (p *plugin) RenderList(
 	data := listData{
 		CurrentTime: currentTime,
 		Title:       options.Title,
+		TitleSuffix: options.TitleSuffix,
 		Header:      &wrappedHeaderItem,
 		Items:       wrappedItems,
 		Styles:      ctx.styles,
@@ -214,7 +216,24 @@ func (p *plugin) handleRootStatus(w http.ResponseWriter, r *http.Request, status
 		pluginItems[i] = &status.Plugins[i]
 	}
 
-	p.RenderList(w, r, spi.RenderListOptions{Title: "PMAAS Status", Header: &status}, pluginItems)
+	p.RenderList(w, r, spi.RenderListOptions{
+		Title:       "PMAAS Status",
+		TitleSuffix: assemblyTitleSuffix(status),
+		Header:      &status,
+	}, pluginItems)
+}
+
+// assemblyTitleSuffix renders the running assembly's name/version (e.g.
+// "(pmaas-assembly-demo (devel))") for display next to the root status page's title - see
+// spi.ServerStatus.AssemblyName/AssemblyVersion and spi.RenderListOptions.TitleSuffix (rendered
+// smaller/muted, since this can be an arbitrarily long string). Returns "" when either is empty,
+// e.g. a binary built without module build info.
+func assemblyTitleSuffix(status spi.ServerStatus) string {
+	if status.AssemblyName == "" || status.AssemblyVersion == "" {
+		return ""
+	}
+
+	return fmt.Sprintf("(%s %s)", status.AssemblyName, status.AssemblyVersion)
 }
 
 func (p *plugin) serverStatusRendererFactory() (spi.EntityRenderer, error) {
