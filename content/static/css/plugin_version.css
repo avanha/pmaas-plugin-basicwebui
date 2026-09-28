@@ -1,0 +1,20 @@
+.entity-plugin-version {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: baseline;
+    margin: 0 0 5px 0;
+}
+
+.entity-plugin-version .name {
+    margin-right: 10px;
+}
+
+.entity-plugin-version .monospace {
+    font-size: 10pt;
+    font-family: "Roboto", "Menlo", "Consolas", monospace;
+}
+
+.entity-plugin-version .unknown {
+    color: grey;
+    font-style: italic;
+}

@@ -1,0 +1,40 @@
+.entity-server-status {
+    display: flex;
+    flex-flow: column;
+}
+
+.entity-server-status .monospace {
+    font-size: 10pt;
+    font-family: "Roboto", "Menlo", "Consolas", monospace;
+}
+
+.entity-server-status .container {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 0 5px 0;
+}
+
+.entity-server-status .container > :not(:last-child) {
+    margin-right: 10px;
+}
+
+.entity-server-status .container > * {
+    white-space: nowrap;
+}
+
+.entity-server-status .label::after {
+    content: ":";
+}
+
+.entity-server-status .group-label {
+    font-weight: bold;
+}
+
+.entity-server-status .group-label::after {
+    content: " - ";
+}
+
+.entity-server-status .unknown {
+    color: grey;
+    font-style: italic;
+}

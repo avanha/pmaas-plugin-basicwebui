@@ -1,0 +1,37 @@
+<div class="entity-server-status">
+    <div class="container">
+        <div class="group-label">Server</div>
+        <div class="container nowrap">
+            <div class="label">Uptime</div>
+            <div class="value">{{FormatUptime .Uptime}}</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="group-label">Load Average</div>
+        {{if .LoadAverage}}
+            <div class="container nowrap">
+                <div class="label">1 / 5 / 15 min</div>
+                <div class="value">
+                    {{printf "%.2f" .LoadAverage.Load1}} / {{printf "%.2f" .LoadAverage.Load5}} / {{printf "%.2f" .LoadAverage.Load15}}
+                </div>
+            </div>
+        {{else}}
+            <div class="value unknown">Not available on this platform</div>
+        {{end}}
+    </div>
+    <div class="container">
+        <div class="group-label">Memory (process)</div>
+        <div class="container nowrap">
+            <div class="label">In Use</div>
+            <div class="value">{{FormatBytes .Memory.AllocBytes}}</div>
+        </div>
+        <div class="container nowrap">
+            <div class="label">Reserved</div>
+            <div class="value">{{FormatBytes .Memory.SysBytes}}</div>
+        </div>
+        <div class="container nowrap">
+            <div class="label">GC Runs</div>
+            <div class="value">{{.Memory.NumGC}}</div>
+        </div>
+    </div>
+</div>

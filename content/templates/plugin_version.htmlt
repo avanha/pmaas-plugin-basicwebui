@@ -1,0 +1,4 @@
+<div class="entity-plugin-version">
+    <div class="name">{{.ShortName}}</div>
+    <div class="version monospace">{{if .Version}}{{.Version}}{{else}}<span class="unknown">unknown</span>{{end}}</div>
+</div>
