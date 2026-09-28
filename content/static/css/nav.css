@@ -73,7 +73,6 @@
 
 .app-main {
     box-sizing: border-box;
-    padding: 10px;
 }
 
 .nav-toggle-checkbox:checked ~ .app-nav {
