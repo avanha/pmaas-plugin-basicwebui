@@ -224,16 +224,27 @@ func (p *plugin) handleRootStatus(w http.ResponseWriter, r *http.Request, status
 }
 
 // assemblyTitleSuffix renders the running assembly's name/version (e.g.
-// "(pmaas-assembly-demo (devel))") for display next to the root status page's title - see
-// spi.ServerStatus.AssemblyName/AssemblyVersion and spi.RenderListOptions.TitleSuffix (rendered
-// smaller/muted, since this can be an arbitrarily long string). Returns "" when either is empty,
-// e.g. a binary built without module build info.
+// "(pmaas-assembly-demo (devel), commit 2026-09-29 03:18 UTC)") for display next to the root
+// status page's title - see spi.ServerStatus.AssemblyName/AssemblyVersion/CommitTime and
+// spi.RenderListOptions.TitleSuffix (rendered smaller/muted, since this can be an arbitrarily
+// long string). Returns "" when AssemblyName/AssemblyVersion are empty, e.g. a binary built
+// without module build info; the commit time is appended only when available (see
+// ServerStatus.CommitTime) and is especially useful as a freshness signal exactly when
+// AssemblyVersion is "(devel)" rather than a real tag - this project's own development builds,
+// via its go.work file, always report "(devel)" for every workspace-local module regardless of
+// whether the source repository itself has been tagged.
 func assemblyTitleSuffix(status spi.ServerStatus) string {
 	if status.AssemblyName == "" || status.AssemblyVersion == "" {
 		return ""
 	}
 
-	return fmt.Sprintf("(%s %s)", status.AssemblyName, status.AssemblyVersion)
+	suffix := fmt.Sprintf("(%s %s", status.AssemblyName, status.AssemblyVersion)
+
+	if !status.CommitTime.IsZero() {
+		suffix += fmt.Sprintf(", commit %s", status.CommitTime.Format("2006-01-02 15:04 MST"))
+	}
+
+	return suffix + ")"
 }
 
 func (p *plugin) serverStatusRendererFactory() (spi.EntityRenderer, error) {
