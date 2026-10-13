@@ -1,12 +1,12 @@
 <div class="entity-wireless-thermometer">
     <div class="title-row">
-        <div class="name">{{.Name}}</div>
+        <div class="name">{{.Name | html}}</div>
         {{if not .RSSIData.IsEmpty}}
             {{with .RSSIData -}}
             <div class="rssi-data">
             {{/* Bootstrap icon for signal strength indication: https://icons.getbootstrap.com/icons/reception-0/ */}}
-                <div>{{.RSSI}}</div>
-                {{/*<div>{{.LastUpdateTime}}</div>*/}}
+                <div>{{.RSSI | html}}</div>
+                {{/*<div>{{.LastUpdateTime | html}}</div>*/}}
             </div>
             {{end}}
         {{end}}
@@ -14,7 +14,7 @@
             {{with .BatteryData -}}
             <div class="battery-data">
                 <div class="value">{{.Level}}</div>
-                {{/*<div>{{.LastUpdateTime}}</div>*/}}
+                {{/*<div>{{.LastUpdateTime | html}}</div>*/}}
             </div>
             {{end}}
         {{end}}

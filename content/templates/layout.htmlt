@@ -1,17 +1,17 @@
 {{define "layout"}}<!DOCTYPE html>
 <html>
     <head>
-        <title>{{.Title}}{{if .TitleSuffix}} {{.TitleSuffix}}{{end}}</title>
+        <title>{{.Title | html}}{{if .TitleSuffix}} {{.TitleSuffix | html}}{{end}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="mobile-web-app-capable" content="yes">
         <meta http-equiv="refresh" content="30">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         {{range .Styles}}
-            <link rel="stylesheet" href="{{.}}"/>
+            <link rel="stylesheet" href="{{. | html}}"/>
         {{end}}
         {{range .Scripts}}
-            <script src="{{.}}" defer></script>
+            <script src="{{. | html}}" defer></script>
         {{end}}
     </head>
     <body class="entity-list">
@@ -22,14 +22,14 @@
                 {{range .Menu}}
                     <li>
                         {{if .Path}}
-                            <a href="{{.Path}}"{{if eq .Path $.CurrentPath}} class="current"{{end}}>{{if .Icon}}<i class="bi bi-{{.Icon}}"></i> {{end}}{{.Label}}</a>
+                            <a href="{{.Path | html}}"{{if eq .Path $.CurrentPath}} class="current"{{end}}>{{if .Icon}}<i class="bi bi-{{.Icon | html}}"></i> {{end}}{{.Label | html}}</a>
                         {{else}}
-                            <span class="nav-group-label">{{.Label}}</span>
+                            <span class="nav-group-label">{{.Label | html}}</span>
                         {{end}}
                         {{if .Children}}
                             <ul>
                                 {{range .Children}}
-                                    <li><a href="{{.Path}}"{{if eq .Path $.CurrentPath}} class="current"{{end}}>{{if .Icon}}<i class="bi bi-{{.Icon}}"></i> {{end}}{{.Label}}</a></li>
+                                    <li><a href="{{.Path | html}}"{{if eq .Path $.CurrentPath}} class="current"{{end}}>{{if .Icon}}<i class="bi bi-{{.Icon | html}}"></i> {{end}}{{.Label | html}}</a></li>
                                 {{end}}
                             </ul>
                         {{end}}
@@ -40,7 +40,7 @@
         <div class="app-main">
             <div class="page-header">
                 <label for="nav-toggle" class="nav-toggle-button" aria-label="Toggle navigation menu"><i class="bi bi-list"></i></label>
-                <div class="title">{{.Title}}{{if .TitleSuffix}} <span class="title-suffix">{{.TitleSuffix}}</span>{{end}}</div>
+                <div class="title">{{.Title | html}}{{if .TitleSuffix}} <span class="title-suffix">{{.TitleSuffix | html}}</span>{{end}}</div>
                 <div class="timestamp">{{.CurrentTime.Format "2006-01-02 3:04:05 PM"}}</div>
             </div>
             {{template "content" .}}
