@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/avanha/pmaas-spi"
+	"github.com/avanha/pmaas-spi/alert"
+	"github.com/avanha/pmaas-spi/events"
 )
 
 //go:embed content/static content/templates
@@ -47,6 +49,11 @@ var pluginVersionTemplate = spi.TemplateInfo{
 
 type state struct {
 	container spi.IPMAASContainer
+
+	// alerts is what the page header shows, from the alert console's summaries. Written on the plugin goroutine, read when pages are rendered.
+	alerts             *alertIndicator
+	receiverHandle     int
+	receiverRegistered bool
 }
 
 type plugin struct {
@@ -61,6 +68,7 @@ func NewPlugin(_ PluginConfig) Plugin {
 	instance := &plugin{
 		state: &state{
 			container: nil,
+			alerts:    newAlertIndicator(),
 		},
 	}
 
@@ -95,10 +103,37 @@ func (p *plugin) Init(container spi.IPMAASContainer) {
 
 func (p *plugin) Start() {
 	fmt.Printf("%v Starting...\n", *p)
+
+	// The alert console publishes a summary whenever an alert is raised, cleared or acknowledged, and each time a
+	// producer raises one again, so one missed before this point is made good soon enough.
+	handle, err := p.state.container.RegisterEventReceiver(alert.SummaryPredicate, p.onAlertEvent)
+	if err != nil {
+		fmt.Printf("%v unable to register for alert events, so the page header won't show them: %v\n", *p, err)
+
+		return
+	}
+
+	p.state.receiverHandle = handle
+	p.state.receiverRegistered = true
+}
+
+// onAlertEvent runs on the plugin goroutine.
+func (p *plugin) onAlertEvent(eventInfo *events.EventInfo) error {
+	p.state.alerts.apply(eventInfo.Event)
+
+	return nil
 }
 
 func (p *plugin) Stop() chan func() {
 	fmt.Printf("%v Stopping...\n", *p)
+
+	if p.state.receiverRegistered {
+		p.state.receiverRegistered = false
+
+		if err := p.state.container.DeregisterEventReceiver(p.state.receiverHandle); err != nil {
+			fmt.Printf("%v unable to deregister the alert event receiver: %v\n", *p, err)
+		}
+	}
 
 	return p.state.container.ClosedCallbackChannel()
 }
@@ -113,6 +148,9 @@ type listData struct {
 	Scripts     []string
 	Menu        []spi.MenuEntry
 	CurrentPath string
+
+	// Alerts is nil when no alert is active.
+	Alerts *alertSummary
 }
 
 type itemValueAndRenderer struct {
@@ -190,6 +228,7 @@ func (p *plugin) RenderList(
 		Scripts:     ctx.scripts,
 		Menu:        p.state.container.GetMenu(),
 		CurrentPath: r.URL.Path,
+		Alerts:      p.state.alerts.current(),
 	}
 
 	if data.Title == "" {

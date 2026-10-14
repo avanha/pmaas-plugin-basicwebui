@@ -27,6 +27,26 @@ body {
     color: grey;
 }
 
+/* Shown only while an alert is active, on the left of the time so that the time never moves. Colors match
+   the alert console's severity colors. */
+.page-header .alert-indicator {
+    margin-right: 8px;
+    font-size: 1.1em;
+    cursor: default;
+}
+
+.page-header .alert-indicator.critical {
+    color: #d9534f;
+}
+
+.page-header .alert-indicator.warning {
+    color: #f0ad4e;
+}
+
+.page-header .alert-indicator.info {
+    color: #5bc0de;
+}
+
 .list-header {
     display: flex;
     flex-flow: row wrap;

@@ -41,6 +41,7 @@
             <div class="page-header">
                 <label for="nav-toggle" class="nav-toggle-button" aria-label="Toggle navigation menu"><i class="bi bi-list"></i></label>
                 <div class="title">{{.Title | html}}{{if .TitleSuffix}} <span class="title-suffix">{{.TitleSuffix | html}}</span>{{end}}</div>
+                {{with .Alerts}}<div class="alert-indicator {{.Class | html}}" title="{{.Description | html}}" role="img" aria-label="{{.Description | html}}"><i class="bi bi-{{.Icon | html}}"></i></div>{{end}}
                 <div class="timestamp">{{.CurrentTime.Format "2006-01-02 3:04:05 PM"}}</div>
             </div>
             {{template "content" .}}
