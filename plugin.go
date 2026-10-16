@@ -24,6 +24,8 @@ var ListTemplate = spi.TemplateInfo{
 	Paths: []string{"templates/layout.htmlt", "templates/entity_list.htmlt"},
 	// The icons first, from this plugin's own copy: every page uses them, so they mustn't depend on the internet.
 	Styles: []string{"bootstrap-icons/bootstrap-icons.css", "css/entity_list.css", "css/nav.css"},
+	// Reloads the page when it is idle, and chimes for critical alerts.
+	Scripts: []string{"js/page.js"},
 }
 
 // serverStatusTemplate renders the status page's header (uptime/load/memory) - the "other

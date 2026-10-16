@@ -47,6 +47,21 @@ body {
     color: #5bc0de;
 }
 
+/* The speaker button that silences the critical-alert chime on this device. */
+.page-header .chime-toggle {
+    margin-right: 8px;
+    padding: 0 4px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.page-header .chime-toggle[data-state="blocked"] {
+    color: #f0ad4e;
+}
+
 .list-header {
     display: flex;
     flex-flow: row wrap;
