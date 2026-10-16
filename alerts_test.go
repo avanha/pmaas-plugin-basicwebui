@@ -3,6 +3,8 @@ package basicwebui
 import (
 	"errors"
 	"net/http/httptest"
+	"path"
+	"regexp"
 	"strings"
 	"testing"
 	"text/template"
@@ -249,5 +251,84 @@ func TestRenderList_ShowsTheConsolesSummaryInTheHeader(t *testing.T) {
 
 	if out := render(); strings.Contains(out, "alert-indicator") {
 		t.Fatalf("indicator still shown after the user acknowledged the alert:\n%s", out)
+	}
+}
+
+// The pages must not need the internet: with it down they lost every icon, because they were loaded from a CDN.
+func TestLayout_LoadsNothingFromOutsideTheServer(t *testing.T) {
+	source, err := contentFS.ReadFile("content/templates/layout.htmlt")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, external := range []string{"http://", "https://", "//cdn", "//fonts."} {
+		if strings.Contains(string(source), external) {
+			t.Errorf("the layout refers to %q", external)
+		}
+	}
+}
+
+func TestListTemplate_ServesTheIconsItself(t *testing.T) {
+	if len(ListTemplate.Styles) == 0 || ListTemplate.Styles[0] != "bootstrap-icons/bootstrap-icons.css" {
+		t.Fatalf("the icons should be the first stylesheet, got %v", ListTemplate.Styles)
+	}
+
+	// Every stylesheet the layout names is really there.
+	for _, style := range ListTemplate.Styles {
+		if _, err := contentFS.ReadFile("content/static/" + style); err != nil {
+			t.Errorf("%s: %v", style, err)
+		}
+	}
+}
+
+// The font is what the icons are, and the stylesheet refers to it by a relative path that has to land on it.
+func TestBootstrapIcons_EveryFileTheStylesheetNamesIsEmbeddedAndIsAFont(t *testing.T) {
+	css, err := contentFS.ReadFile("content/static/bootstrap-icons/bootstrap-icons.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	urls := regexp.MustCompile(`url\("([^"]+)"\)`).FindAllStringSubmatch(string(css), -1)
+	if len(urls) != 2 {
+		t.Fatalf("expected the two fonts, got %v", urls)
+	}
+
+	magic := map[string]string{".woff2": "wOF2", ".woff": "wOFF"}
+
+	for _, match := range urls {
+		file, _, _ := strings.Cut(match[1], "?")
+		if strings.Contains(file, "://") {
+			t.Errorf("the stylesheet loads %s from elsewhere", file)
+			continue
+		}
+
+		content, err := contentFS.ReadFile("content/static/bootstrap-icons/" + strings.TrimPrefix(file, "./"))
+		if err != nil {
+			t.Errorf("%s isn't embedded: %v", file, err)
+			continue
+		}
+
+		want := magic[path.Ext(file)]
+		if len(content) < 1000 || string(content[:4]) != want {
+			t.Errorf("%s isn't a %s font", file, want)
+		}
+	}
+}
+
+// The icons the pages use must be in the font: a name that isn't would show nothing.
+func TestBootstrapIcons_TheOnesThePagesUseAreThere(t *testing.T) {
+	css, err := contentFS.ReadFile("content/static/bootstrap-icons/bootstrap-icons.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, icon := range []string{
+		"list", "wifi", "wifi-off", "toggle-on", "toggle-off", "question-circle-fill", "lightning-charge-fill",
+		"exclamation-octagon-fill", "exclamation-triangle-fill", "info-circle-fill", "door-open-fill", "door-closed-fill",
+		"stopwatch", "droplet-fill", "check-circle-fill", "x-circle-fill", "dash-circle", "cpu", "bell",
+	} {
+		if !strings.Contains(string(css), ".bi-"+icon+"::before") {
+			t.Errorf("bi-%s isn't in the icon font", icon)
+		}
 	}
 }

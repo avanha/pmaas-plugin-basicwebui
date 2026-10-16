@@ -1,0 +1,5 @@
+Bootstrap Icons v1.11.3, unmodified: font/bootstrap-icons.css and font/fonts/*.woff, *.woff2 from
+https://github.com/twbs/icons at tag v1.11.3. MIT licensed, see LICENSE.
+
+The pages used to load this from a CDN, which meant they lost every icon when the internet was down. To update, copy
+the same three files from a newer tag.
