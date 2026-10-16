@@ -326,6 +326,7 @@ func TestBootstrapIcons_TheOnesThePagesUseAreThere(t *testing.T) {
 		"list", "wifi", "wifi-off", "toggle-on", "toggle-off", "question-circle-fill", "lightning-charge-fill",
 		"exclamation-octagon-fill", "exclamation-triangle-fill", "info-circle-fill", "door-open-fill", "door-closed-fill",
 		"stopwatch", "droplet-fill", "check-circle-fill", "x-circle-fill", "dash-circle", "cpu", "bell",
+		"lock-fill", "key-fill", "shield-check",
 	} {
 		if !strings.Contains(string(css), ".bi-"+icon+"::before") {
 			t.Errorf("bi-%s isn't in the icon font", icon)
