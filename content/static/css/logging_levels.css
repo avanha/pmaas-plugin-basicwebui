@@ -1,0 +1,33 @@
+.entity-logging-levels .note {
+    color: grey;
+    max-width: 40em;
+}
+
+.entity-logging-levels table.levels {
+    border-collapse: collapse;
+}
+
+.entity-logging-levels td {
+    padding: 4px 10px 4px 0;
+    vertical-align: middle;
+}
+
+.entity-logging-levels td.component {
+    font-family: "Roboto", "Menlo", "Consolas", monospace;
+    font-size: 10pt;
+}
+
+.entity-logging-levels tr.inherited td.component {
+    color: grey;
+}
+
+.entity-logging-levels td.depth-0 { font-weight: bold; }
+.entity-logging-levels td.depth-2 { padding-left: 1.5em; }
+.entity-logging-levels td.depth-3 { padding-left: 3em; }
+.entity-logging-levels td.depth-4 { padding-left: 4.5em; }
+.entity-logging-levels td.depth-5 { padding-left: 6em; }
+
+.entity-logging-levels .row-error {
+    color: #b00020;
+    margin-left: 8px;
+}

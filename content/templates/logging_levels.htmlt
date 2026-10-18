@@ -1,0 +1,27 @@
+<div class="entity-logging-levels">
+    {{if .Unavailable}}
+        <div class="unavailable">{{.Unavailable | html}}</div>
+    {{else}}
+        <p class="note">
+            What each part of the server logs. A component with no level of its own takes the one of the nearest component above
+            it, and the first row, the default, is what applies to the rest. Changes take effect at once and are kept.
+        </p>
+        <table class="levels">
+            <tbody>
+            {{range .Rows}}
+                <tr class="level-row{{if not .Set}} inherited{{end}}" data-component="{{.Name | html}}">
+                    <td class="component depth-{{.Depth}}">{{.Label | html}}</td>
+                    <td class="chooser">
+                        <select class="level-select" aria-label="Level of {{.Label | html}}">
+                            {{$level := .Level}}{{$set := .Set}}{{$name := .Name}}
+                            {{if $name}}<option value=""{{if not $set}} selected{{end}}>inherit ({{$level | html}})</option>{{end}}
+                            {{range $.Levels}}<option value="{{. | html}}"{{if and $set (eq . $level)}} selected{{end}}>{{. | html}}</option>{{end}}
+                        </select>
+                        <span class="row-error"></span>
+                    </td>
+                </tr>
+            {{end}}
+            </tbody>
+        </table>
+    {{end}}
+</div>

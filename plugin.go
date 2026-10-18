@@ -97,6 +97,16 @@ func (p *plugin) Init(container spi.IPMAASContainer) {
 		reflect.TypeOf((*spi.PluginVersion)(nil)).Elem(),
 		p.pluginVersionRendererFactory)
 
+	// The page that sets how much each component of the server logs, and the route it changes them with.
+	container.AddRouteWithOptions(
+		"",
+		p.handleLogging,
+		&spi.HttpHandlerOptions{SupportsXsrfValidation: true, MenuLabel: "Logging", MenuIcon: "sliders"})
+	container.AddJsonRoute("logging/level", func() any { return &loggingLevelRequest{} }, p.handleLoggingLevel)
+	container.RegisterEntityRenderer(
+		reflect.TypeOf((*loggingLevels)(nil)).Elem(),
+		p.loggingLevelsRendererFactory)
+
 	// Non-fatal if another plugin already claimed the root status page - this plugin's own
 	// server-wide status page is a nice-to-have, not something anything else here depends on.
 	if err := container.ProvideRootStatusHandler(p.handleRootStatus); err != nil {
