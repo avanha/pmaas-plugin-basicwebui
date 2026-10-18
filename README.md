@@ -44,3 +44,12 @@ the button). A wall-mounted display that is never touched will therefore stay si
 allows autoplay is needed there.
 
 The script is tested with node (`js_test/page_test.js`, run by `go test`; skipped when node isn't installed).
+
+## Logging page
+
+The menu has a **Logging** page (the plugin's list route, `/plugins/basicwebui/`) that shows every component of the server
+that logs, indented by where it sits in the tree, with the level in force and a dropdown to change it: DEBUG, INFO, WARN,
+ERROR, or "inherit" to take away the level set for that component so that it follows the one above. The first row, "All
+components", is the default for those with no level above them, and starts at WARN. Changes take effect at once and are kept
+by the server. The page needs a server that offers control of its logging (`pmaas-core` v0.0.10 and later); otherwise it says
+so.
