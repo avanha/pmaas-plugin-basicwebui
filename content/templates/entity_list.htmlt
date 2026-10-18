@@ -1,6 +1,6 @@
 {{define "content"}}
 {{if .Header.IsPresent}}<div class="list-header">{{RenderItem .Header}}</div>{{end}}
-<ol class="entity-list">{{range .Items}}
+<ol class="entity-list{{if .Masonry}} masonry{{end}}">{{range .Items}}
     <li>
         {{RenderItem .}}
     </li>

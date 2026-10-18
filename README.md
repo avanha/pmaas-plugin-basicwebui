@@ -53,3 +53,15 @@ ERROR, or "inherit" to take away the level set for that component so that it fol
 components", is the default for those with no level above them, and starts at WARN. Changes take effect at once and are kept
 by the server. The page needs a server that offers control of its logging (`pmaas-core` v0.0.10 and later); otherwise it says
 so.
+
+## Masonry
+
+A page whose cards vary a lot in height (a host with many interfaces beside one with none) can ask for a masonry layout with
+`spi.RenderListOptions{Masonry: true}`, so that each card is as tall as its content instead of as tall as the tallest in its row. The
+ESPHome and netmon pages do. It fills left to right and then puts each card in the shortest column. Pages that don't ask (the
+environment plugin's thermometers, kept to one height on purpose) are unchanged.
+
+It is CSS only, CSS Grid Lanes (`display: grid-lanes`), which at the time of writing only the newest Safari has (26.4 and later,
+iOS too); Chrome and Firefox have it behind a flag. The rules are inside `@supports (display: grid-lanes)`, so every other browser,
+including the old Safari on an iPad, which has no CSS Grid at all, keeps the wrapping rows of equal-height cards that it has always
+had. There is nothing to configure and nothing breaks where it isn't supported; it takes effect as browsers get it.

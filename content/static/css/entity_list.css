@@ -94,3 +94,22 @@ ol.entity-list li:not(:first-child) {
     /*margin-left: 10px;*/
 }
 
+
+/* Masonry, for the pages that ask for it (spi.RenderListOptions.Masonry): each card is as tall as its content instead of as
+   tall as the tallest in its row, and cards fill left to right and then go where there is room. It is CSS Grid Lanes, which only
+   the newest browsers have (Safari 26.4 and later at the time of writing), so everything else, an old iPad included, keeps the
+   wrapping rows above, which is why this is all inside @supports. */
+@supports (display: grid-lanes) {
+    ol.entity-list.masonry {
+        display: grid-lanes;
+        grid-template-columns: repeat(auto-fill, 492px);
+        justify-content: start;
+        gap: 10px;
+        margin: 0;
+    }
+
+    ol.entity-list.masonry li {
+        width: auto;
+        margin: 0;
+    }
+}

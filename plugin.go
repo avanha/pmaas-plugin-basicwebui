@@ -167,6 +167,9 @@ type listData struct {
 	Menu        []spi.MenuEntry
 	CurrentPath string
 
+	// Masonry is whether the items are laid out as a masonry (see spi.RenderListOptions.Masonry).
+	Masonry bool
+
 	// Alerts is nil when no alert is active.
 	Alerts *alertSummary
 }
@@ -246,6 +249,7 @@ func (p *plugin) RenderList(
 		Scripts:     ctx.scripts,
 		Menu:        p.state.container.GetMenu(),
 		CurrentPath: r.URL.Path,
+		Masonry:     options.Masonry,
 		Alerts:      p.state.alerts.current(),
 	}
 
