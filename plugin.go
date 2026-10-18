@@ -18,6 +18,9 @@ import (
 //go:embed content/static content/templates
 var contentFS embed.FS
 
+// masonryScript places the cards by hand, in the browsers that don't have masonry in CSS. Pages that ask for masonry get it.
+const masonryScript = "js/masonry.js"
+
 var ListTemplate = spi.TemplateInfo{
 	Name: "layout",
 	FuncMap: template.FuncMap{
@@ -222,6 +225,11 @@ func (p *plugin) RenderList(
 
 	ctx := renderContext{}
 	ctx.init(compiledTemplate)
+
+	// The script that does masonry where the browser can't (see masonry.js) is only sent to the pages that ask for it.
+	if options.Masonry {
+		ctx.appendScripts([]string{masonryScript})
+	}
 
 	wrappedHeaderItem := itemValueAndRenderer{}
 

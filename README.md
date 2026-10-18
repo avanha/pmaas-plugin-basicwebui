@@ -65,3 +65,13 @@ It is CSS only, CSS Grid Lanes (`display: grid-lanes`), which at the time of wri
 iOS too); Chrome and Firefox have it behind a flag. The rules are inside `@supports (display: grid-lanes)`, so every other browser,
 including the old Safari on an iPad, which has no CSS Grid at all, keeps the wrapping rows of equal-height cards that it has always
 had. There is nothing to configure and nothing breaks where it isn't supported; it takes effect as browsers get it.
+
+### Masonry in the browsers that don't have it
+
+Where `display: grid-lanes` isn't available (Chrome and Firefox, today, and an old Safari such as an iPad's), the pages that ask for
+masonry are sent `js/masonry.js`. It waits for the page to load, marks the list `masonry-js` (see `entity_list.css`, which then takes
+the cards out of the flow), and places each card by hand: fixed-width columns across the page, each card into the shortest column,
+the first row filling left to right, with Grid Lanes' own 1em tolerance so that nearly level columns go left to right. It places
+them again when the window changes size or turns, when the page has finished loading (fonts and icons change heights), and, where the
+browser reports it, when a card changes size. With scripts off, or if it fails, the cards stay in the wrapping rows. It is plain
+ES5 for the old Safari, and the placing is tested in node (`js_test/masonry_test.js`). It does nothing in a browser that has Grid Lanes.

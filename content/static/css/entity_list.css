@@ -113,3 +113,17 @@ ol.entity-list li:not(:first-child) {
         margin: 0;
     }
 }
+
+/* The same for the browsers that don't have it, once masonry.js has taken over (it adds masonry-js to the list): the cards are placed by
+   hand, so they are taken out of the flow and the script says where each goes and how tall the list is. Nothing here applies if the
+   script doesn't run. */
+ol.entity-list.masonry-js {
+    display: block;
+    position: relative;
+    margin: 0;
+}
+
+ol.entity-list.masonry-js li {
+    position: absolute;
+    margin: 0;
+}
