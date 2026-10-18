@@ -106,7 +106,7 @@ func (p *plugin) Init(container spi.IPMAASContainer) {
 	container.AddRouteWithOptions(
 		"",
 		p.handleLogging,
-		&spi.HttpHandlerOptions{SupportsXsrfValidation: true, MenuLabel: "Logging", MenuIcon: "sliders"})
+		&spi.HttpHandlerOptions{SupportsXsrfValidation: true, MenuLabel: "Logging"})
 	container.AddJsonRoute("logging/level", func() any { return &loggingLevelRequest{} }, p.handleLoggingLevel)
 	container.RegisterEntityRenderer(
 		reflect.TypeOf((*loggingLevels)(nil)).Elem(),
