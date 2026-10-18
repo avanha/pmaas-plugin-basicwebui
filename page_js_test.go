@@ -1,6 +1,7 @@
 package basicwebui
 
 import (
+	"github.com/avanha/pmaas-spi"
 	"os/exec"
 	"strings"
 	"testing"
@@ -44,8 +45,8 @@ func TestMasonryScript_IsServedAndOnlyForThePagesThatAskForMasonry(t *testing.T)
 		}
 	}
 
-	out := renderLayout(t, listData{Title: "Page", Scripts: append(append([]string{}, ListTemplate.Scripts...), masonryScript)})
-	if !strings.Contains(out, `<script src="js/masonry.js" defer></script>`) {
+	out := renderLayout(t, listData{Title: "Page", Scripts: append(append([]string{}, ListTemplate.Scripts...), masonryScriptPath(assetPaths{}))})
+	if !strings.Contains(out, `<script src="/plugins-assets/basicwebui/js/masonry.js" defer></script>`) {
 		t.Errorf("the script isn't included when asked for:\n%s", out)
 	}
 }
@@ -79,5 +80,22 @@ func TestListTemplate_ServesItsScripts(t *testing.T) {
 		if _, err := contentFS.ReadFile("content/static/" + script); err != nil {
 			t.Errorf("%s: %v", script, err)
 		}
+	}
+}
+
+// assetPaths stands in for the container's idea of where this plugin's assets are.
+type assetPaths struct{ spi.IPMAASContainer }
+
+func (assetPaths) AssetFullPath(relativePath string) string {
+	return spi.PluginAssetPrefix + "basicwebui/" + relativePath
+}
+
+// The page that has masonry belongs to another plugin, whose own routes answer anything under them with its page. A relative path to
+// the script would be asked of that plugin and come back as HTML, so the script has to be addressed as this plugin's asset.
+func TestMasonryScriptPath_IsAbsoluteSoItIsNotAskedOfThePageThatHasIt(t *testing.T) {
+	got := masonryScriptPath(assetPaths{})
+
+	if !strings.HasPrefix(got, "/") || got != "/plugins-assets/basicwebui/js/masonry.js" {
+		t.Errorf("got %q", got)
 	}
 }

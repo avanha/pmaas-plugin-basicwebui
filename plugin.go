@@ -18,6 +18,13 @@ import (
 //go:embed content/static content/templates
 var contentFS embed.FS
 
+// masonryScriptPath is where the browser fetches the masonry script from: the full path of this plugin's asset, since the page it is
+// in belongs to another plugin, and a path relative to that page would be that plugin's own route (which answers anything under it with
+// its page, so the script would arrive as HTML). The scripts of the templates are given this way too, by the container.
+func masonryScriptPath(container spi.IPMAASContainer) string {
+	return container.AssetFullPath(masonryScript)
+}
+
 // masonryScript places the cards by hand, in the browsers that don't have masonry in CSS. Pages that ask for masonry get it.
 const masonryScript = "js/masonry.js"
 
@@ -228,7 +235,7 @@ func (p *plugin) RenderList(
 
 	// The script that does masonry where the browser can't (see masonry.js) is only sent to the pages that ask for it.
 	if options.Masonry {
-		ctx.appendScripts([]string{masonryScript})
+		ctx.appendScripts([]string{masonryScriptPath(p.state.container)})
 	}
 
 	wrappedHeaderItem := itemValueAndRenderer{}
