@@ -3,7 +3,9 @@ package basicwebui
 import (
 	"embed"
 	"fmt"
+	"github.com/avanha/pmaas-spi/logging"
 	"html/template"
+	"log/slog"
 	"net/http"
 	"reflect"
 	"time"
@@ -60,6 +62,7 @@ type state struct {
 }
 
 type plugin struct {
+	log   *slog.Logger
 	state *state
 }
 
@@ -69,6 +72,7 @@ type Plugin interface {
 
 func NewPlugin(_ PluginConfig) Plugin {
 	instance := &plugin{
+		log: slog.New(slog.DiscardHandler),
 		state: &state{
 			container: nil,
 			alerts:    newAlertIndicator(),
@@ -87,6 +91,7 @@ func (p *plugin) ShortName() string {
 
 func (p *plugin) Init(container spi.IPMAASContainer) {
 	p.state.container = container
+	p.log = logging.For(container)
 	container.ProvideContentFS(&contentFS, "content")
 	container.EnableStaticContent("static")
 
@@ -110,18 +115,18 @@ func (p *plugin) Init(container spi.IPMAASContainer) {
 	// Non-fatal if another plugin already claimed the root status page - this plugin's own
 	// server-wide status page is a nice-to-have, not something anything else here depends on.
 	if err := container.ProvideRootStatusHandler(p.handleRootStatus); err != nil {
-		fmt.Printf("%T unable to register as the root status handler: %v\n", p, err)
+		p.log.Error("unable to register as the root status handler", "error", err)
 	}
 }
 
 func (p *plugin) Start() {
-	fmt.Printf("%v Starting...\n", *p)
+	p.log.Info("starting")
 
 	// The alert console publishes a summary whenever an alert is raised, cleared or acknowledged, and each time a
 	// producer raises one again, so one missed before this point is made good soon enough.
 	handle, err := p.state.container.RegisterEventReceiver(alert.SummaryPredicate, p.onAlertEvent)
 	if err != nil {
-		fmt.Printf("%v unable to register for alert events, so the page header won't show them: %v\n", *p, err)
+		p.log.Error("unable to register for alert events, so the page header won't show them", "error", err)
 
 		return
 	}
@@ -138,13 +143,13 @@ func (p *plugin) onAlertEvent(eventInfo *events.EventInfo) error {
 }
 
 func (p *plugin) Stop() chan func() {
-	fmt.Printf("%v Stopping...\n", *p)
+	p.log.Info("stopping")
 
 	if p.state.receiverRegistered {
 		p.state.receiverRegistered = false
 
 		if err := p.state.container.DeregisterEventReceiver(p.state.receiverHandle); err != nil {
-			fmt.Printf("%v unable to deregister the alert event receiver: %v\n", *p, err)
+			p.log.Error("unable to deregister the alert event receiver", "error", err)
 		}
 	}
 
