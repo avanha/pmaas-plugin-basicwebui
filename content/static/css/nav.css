@@ -89,3 +89,10 @@
     background: rgba(0, 0, 0, 0.4);
     z-index: 1;
 }
+
+/* The rule between the entries set apart at the top of the menu and the rest. */
+.app-nav li.nav-separator hr {
+    margin: 6px 16px;
+    border: 0;
+    border-top: 1px solid #a19f9c;
+}

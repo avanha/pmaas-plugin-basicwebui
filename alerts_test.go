@@ -333,3 +333,27 @@ func TestBootstrapIcons_TheOnesThePagesUseAreThere(t *testing.T) {
 		}
 	}
 }
+
+func TestLayout_ASeparatorInTheMenuIsARuleAndNotAnEntry(t *testing.T) {
+	out := renderLayout(t, listData{
+		CurrentTime: time.Now(), Title: "Page", CurrentPath: "/plugins/b/",
+		Menu: []spi.MenuEntry{
+			{Label: "Status", Path: "/"},
+			{Separator: true},
+			{Label: "B", Path: "/plugins/b/"},
+		},
+	})
+
+	if strings.Count(out, `class="nav-separator"`) != 1 || strings.Count(out, "<hr>") != 1 {
+		t.Errorf("want one rule in:\n%s", out)
+	}
+
+	first, rule, last := strings.Index(out, ">Status<"), strings.Index(out, "nav-separator"), strings.Index(out, ">B<")
+	if !(first < rule && rule < last) {
+		t.Errorf("the rule should fall between the entries: %d %d %d", first, rule, last)
+	}
+
+	if strings.Contains(out, "nav-group-label") {
+		t.Errorf("a separator is not a group label:\n%s", out)
+	}
+}

@@ -19,6 +19,9 @@
         <nav class="app-nav">
             <ul>
                 {{range .Menu}}
+                    {{if .Separator}}
+                    <li class="nav-separator" role="separator"><hr></li>
+                    {{else}}
                     <li>
                         {{if .Path}}
                             <a href="{{.Path | html}}"{{if eq .Path $.CurrentPath}} class="current"{{end}}>{{if .Icon}}<i class="bi bi-{{.Icon | html}}"></i> {{end}}{{.Label | html}}</a>
@@ -33,6 +36,7 @@
                             </ul>
                         {{end}}
                     </li>
+                    {{end}}
                 {{end}}
             </ul>
         </nav>
